@@ -37,4 +37,8 @@ describe('TaskController (e2e)', () => {
     expect(response.body.name).toBe(fakeUser.name);
     createdUserId = response.body.id;
   });
+
+  it('GET /users → Lista de usuários', async () => {
+    await request(app.getHttpServer()).get('/users').expect(200);
+  });
 });
