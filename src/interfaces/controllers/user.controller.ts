@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { CreateUserUseCase } from '../../application/use-cases/create-user.usecase';
 import { UserRepositoryPrisma } from '../../infrastructure/database/repositories/user.repository.prisma';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -8,6 +8,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UpdateUserUseCase } from '../../application/use-cases/update-user.usecase';
 import { GetAllUserUseCase } from '../../application/use-cases/get-all-user.usercase';
 import { GetUserByIdUseCase } from '../../application/use-cases/get-user-by-id.usercase';
+import { DeleteUserUseCase } from '../../application/use-cases/delete-user.usecase';
 
 @ApiTags('Users')
 @Controller('users')
@@ -16,12 +17,14 @@ export class UserController {
   private readonly updateUserUseCase: UpdateUserUseCase;
   private readonly getAllUserUseCase: GetAllUserUseCase;
   private readonly getUserByIdUseCase: GetUserByIdUseCase;
+  private readonly deleteUserUseCase: DeleteUserUseCase;
 
   constructor(private readonly userRepository: UserRepositoryPrisma) {
     this.createUserUseCase = new CreateUserUseCase(userRepository);
     this.updateUserUseCase = new UpdateUserUseCase(userRepository);
     this.getAllUserUseCase = new GetAllUserUseCase(userRepository);
     this.getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
+    this.deleteUserUseCase = new DeleteUserUseCase(userRepository);
   }
 
   @Post()
@@ -54,7 +57,14 @@ export class UserController {
       name: body.name,
       email: body.email,
     });
-
     return user;
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  @ApiOperation({ summary: 'Deletar usuário' })
+  @ApiResponse({ status: 204, description: 'Usuário deletado com sucesso' })
+  async delete(@Param('id') id: string): Promise<void> {
+    await this.deleteUserUseCase.execute(id);
   }
 }
