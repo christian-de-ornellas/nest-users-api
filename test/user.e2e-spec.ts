@@ -8,7 +8,7 @@ import { faker } from '@faker-js/faker';
 describe('TaskController (e2e)', () => {
   let app: INestApplication<App>;
   let createdUserId: string;
- 
+
   const fakeUser = {
     name: faker.person.fullName(),
     email: faker.internet.email(),
@@ -46,5 +46,11 @@ describe('TaskController (e2e)', () => {
     await request(app.getHttpServer())
       .get(`/users/${createdUserId}`)
       .expect(200);
+  });
+
+  it('DELETE /users/:id → Removendo usuário', async () => {
+    await request(app.getHttpServer())
+      .delete(`/users/${createdUserId}`)
+      .expect(204);
   });
 });
