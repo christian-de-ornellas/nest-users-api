@@ -33,14 +33,26 @@ export class UserController {
     private readonly userRepository: UserRepositoryPrisma,
     redisService: RedisService,
   ) {
-    this.createUserUseCase = new CreateUserUseCase(userRepository);
-    this.updateUserUseCase = new UpdateUserUseCase(userRepository);
+    this.createUserUseCase = new CreateUserUseCase(
+      userRepository,
+      redisService,
+    );
+    this.updateUserUseCase = new UpdateUserUseCase(
+      userRepository,
+      redisService,
+    );
     this.getAllUserUseCase = new GetAllUserUseCase(
       userRepository,
       redisService,
     );
-    this.getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
-    this.deleteUserUseCase = new DeleteUserUseCase(userRepository);
+    this.getUserByIdUseCase = new GetUserByIdUseCase(
+      userRepository,
+      redisService,
+    );
+    this.deleteUserUseCase = new DeleteUserUseCase(
+      userRepository,
+      redisService,
+    );
   }
 
   @Post()
