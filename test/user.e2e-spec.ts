@@ -4,7 +4,6 @@ import * as request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 import { faker } from '@faker-js/faker';
-import { RedisService } from '../src/infrastructure/cache/redis.service';
 
 describe('TaskController (e2e)', () => {
   let app: INestApplication<App>;
@@ -26,9 +25,6 @@ describe('TaskController (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-
-    const redisService = app.get(RedisService);
-    await redisService.disconnect();
   });
 
   it('POST /users → Criar usuário', async () => {
