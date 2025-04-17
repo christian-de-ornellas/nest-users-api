@@ -4,7 +4,10 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.enableCors({
+    origin: '*', // ou substitua por um domínio específico, ex: 'http://localhost:3000'
+    credentials: true,
+  });
   const config = new DocumentBuilder()
     .setTitle('Users API')
     .setDescription('API para cadastro de usuários')
