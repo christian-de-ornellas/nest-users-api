@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateUserUseCase } from '../../application/use-cases/create-user.usecase';
 import { UserRepositoryPrisma } from '../../infrastructure/database/repositories/user.repository.prisma';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -9,6 +18,7 @@ import { UpdateUserUseCase } from '../../application/use-cases/update-user.useca
 import { GetAllUserUseCase } from '../../application/use-cases/get-all-user.usercase';
 import { GetUserByIdUseCase } from '../../application/use-cases/get-user-by-id.usercase';
 import { DeleteUserUseCase } from '../../application/use-cases/delete-user.usecase';
+import { RedisService } from '../../infrastructure/cache/redis.service';
 
 @ApiTags('Users')
 @Controller('users')
@@ -19,10 +29,16 @@ export class UserController {
   private readonly getUserByIdUseCase: GetUserByIdUseCase;
   private readonly deleteUserUseCase: DeleteUserUseCase;
 
-  constructor(private readonly userRepository: UserRepositoryPrisma) {
+  constructor(
+    private readonly userRepository: UserRepositoryPrisma,
+    redisService: RedisService,
+  ) {
     this.createUserUseCase = new CreateUserUseCase(userRepository);
     this.updateUserUseCase = new UpdateUserUseCase(userRepository);
-    this.getAllUserUseCase = new GetAllUserUseCase(userRepository);
+    this.getAllUserUseCase = new GetAllUserUseCase(
+      userRepository,
+      redisService,
+    );
     this.getUserByIdUseCase = new GetUserByIdUseCase(userRepository);
     this.deleteUserUseCase = new DeleteUserUseCase(userRepository);
   }
